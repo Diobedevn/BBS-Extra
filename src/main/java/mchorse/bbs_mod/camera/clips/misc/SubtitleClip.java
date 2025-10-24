@@ -2,6 +2,7 @@ package mchorse.bbs_mod.camera.clips.misc;
 
 import mchorse.bbs_mod.camera.clips.CameraClip;
 import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.settings.values.core.ValueLink;
 import mchorse.bbs_mod.settings.values.core.ValueTransform;
 import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
 import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
@@ -23,6 +24,7 @@ public class SubtitleClip extends CameraClip
     public ValueFloat anchorY = new ValueFloat("anchorY", 0.5F);
     public ValueInt color = new ValueInt("color", Colors.WHITE);
     public ValueBoolean textShadow = new ValueBoolean("textShadow", true);
+    public ValueLink font = new ValueLink("font", null);
     public ValueFloat windowX = new ValueFloat("windowX", 0.5F);
     public ValueFloat windowY = new ValueFloat("windowY", 0.5F);
     public ValueInt background = new ValueInt("background", 0);
@@ -63,6 +65,7 @@ public class SubtitleClip extends CameraClip
         this.add(this.anchorY);
         this.add(this.color);
         this.add(this.textShadow);
+        this.add(this.font);
         this.add(this.windowX);
         this.add(this.windowY);
         this.add(this.background);
@@ -86,6 +89,7 @@ public class SubtitleClip extends CameraClip
         this.subtitle.updateBackground(this.background.get(), this.backgroundOffset.get(), this.shadow.get(), this.shadowOpaque.get());
         this.subtitle.updateTransform(this.transform.get(), factor);
         this.subtitle.updateConstraints(this.lineHeight.get(), this.maxWidth.get());
+        this.subtitle.font = this.font.get();
         subtitles.add(this.subtitle);
     }
 

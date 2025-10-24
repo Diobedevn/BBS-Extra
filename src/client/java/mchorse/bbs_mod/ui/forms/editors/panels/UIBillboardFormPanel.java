@@ -31,6 +31,12 @@ public class UIBillboardFormPanel extends UIFormPanel<BillboardForm>
 
     public UIToggle shading;
 
+    /* Video playback controls */
+    public UIToggle videoPlaying;
+    public UITrackpad videoStartTime;
+    public UITrackpad videoPlaybackSpeed;
+    public UIToggle videoLoop;
+
     public UIBillboardFormPanel(UIForm editor)
     {
         super(editor);
@@ -58,9 +64,19 @@ public class UIBillboardFormPanel extends UIFormPanel<BillboardForm>
 
         this.shading = new UIToggle(UIKeys.FORMS_EDITORS_BILLBOARD_SHADING, false, (b) -> this.form.shading.set(b.getValue()));
 
+        /* Video playback controls */
+        this.videoPlaying = new UIToggle(UIKeys.VIDEO_PLAYING, false, (b) -> this.form.videoPlaying.set(b.getValue()));
+        this.videoStartTime = new UITrackpad((value) -> this.form.videoStartTime.set(value.floatValue()));
+        this.videoStartTime.tooltip(UIKeys.VIDEO_START_TIME);
+        this.videoPlaybackSpeed = new UITrackpad((value) -> this.form.videoPlaybackSpeed.set(value.floatValue()));
+        this.videoPlaybackSpeed.tooltip(UIKeys.VIDEO_PLAYBACK_SPEED);
+        this.videoPlaybackSpeed.setValue(1.0);
+        this.videoLoop = new UIToggle(UIKeys.VIDEO_LOOP, false, (b) -> this.form.videoLoop.set(b.getValue()));
+
         this.options.add(this.pick, this.color, this.billboard, this.linear, this.mipmap);
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_BILLBOARD_CROP).marginTop(8), this.openCrop, this.resizeCrop);
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_BILLBOARD_UV_SHIFT).marginTop(8), UI.row(this.offsetX, this.offsetY), this.rotation, this.shading);
+        this.options.add(UI.label(UIKeys.VIDEO_PLAYBACK).marginTop(8), this.videoPlaying, this.videoStartTime, this.videoPlaybackSpeed, this.videoLoop);
     }
 
     @Override
@@ -80,5 +96,11 @@ public class UIBillboardFormPanel extends UIFormPanel<BillboardForm>
         this.rotation.setValue(form.rotation.get());
 
         this.shading.setValue(form.shading.get());
+
+        /* Video playback properties */
+        this.videoPlaying.setValue(form.videoPlaying.get());
+        this.videoStartTime.setValue(form.videoStartTime.get());
+        this.videoPlaybackSpeed.setValue(form.videoPlaybackSpeed.get());
+        this.videoLoop.setValue(form.videoLoop.get());
     }
 }

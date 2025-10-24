@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.camera.clips.misc;
 
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.pose.Transform;
 
 public class Subtitle
@@ -24,6 +25,8 @@ public class Subtitle
 
     public int lineHeight;
     public int maxWidth;
+    
+    public Link font;
 
     public void update(String label, int x, int y, float size, float anchorX, float anchorY, int color, boolean textShadow)
     {

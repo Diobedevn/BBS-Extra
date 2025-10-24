@@ -192,7 +192,14 @@ public class UITexturePicker extends UIElement implements IImportPathProvider
                 UITexturePicker.this.updateFolderButton();
             }
         };
-        this.picker.filter((l) -> l.path.endsWith("/") || l.path.endsWith(".png")).cancelScrollEdge();
+        // Allow PNG images and video files (.mp4, .mov, .avi, .webm, .mkv)
+        this.picker.filter((l) -> {
+            String path = l.path.toLowerCase();
+            return path.endsWith("/") || path.endsWith(".png") || 
+                   path.endsWith(".mp4") || path.endsWith(".mov") || 
+                   path.endsWith(".avi") || path.endsWith(".webm") || 
+                   path.endsWith(".mkv");
+        }).cancelScrollEdge();
 
         this.linear = new UIToggle(UIKeys.TEXTURES_LINEAR, (b) ->
         {

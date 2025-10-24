@@ -61,6 +61,9 @@ dependencies {
 
 	modImplementation "org.anarres:jcpp:1.4.14"
 	modImplementation "io.github.douira:glsl-transformer:2.0.0-pre13"
+
+	// JavaCV for video decoding (bundled into mod JAR)
+	modImplementation(include("org.bytedeco:javacv-platform:1.5.10"))
 }
 
 processResources {

@@ -301,6 +301,9 @@ public class BBSModClient implements ClientModInitializer
         selectors = new EntitySelectors();
         selectors.read();
         films = new Films();
+        
+        // Initialize VideoTextureManager for video playback
+        mchorse.bbs_mod.graphics.texture.VideoTextureManager.getInstance();
 
         BBSResources.init();
 

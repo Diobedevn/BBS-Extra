@@ -16,6 +16,7 @@ import mchorse.bbs_mod.forms.forms.utils.Anchor;
 import mchorse.bbs_mod.forms.renderers.FormRenderType;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import mchorse.bbs_mod.graphics.Draw;
+import mchorse.bbs_mod.graphics.texture.VideoTextureManager;
 import mchorse.bbs_mod.mixin.client.ClientPlayerEntityAccessor;
 import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
@@ -531,6 +532,10 @@ public abstract class BaseFilmController
 
     public void startRenderFrame(float transition)
     {
+        // Update VideoTextureManager with current tick for timeline synchronization
+        int currentTick = this.getTick();
+        VideoTextureManager.getInstance().setCurrentTick(currentTick);
+        
         for (Map.Entry<Integer, IEntity> entry : this.entities.entrySet())
         {
             int i = entry.getKey();

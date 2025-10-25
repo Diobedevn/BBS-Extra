@@ -6,6 +6,8 @@ import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.forms.forms.BillboardForm;
 import mchorse.bbs_mod.graphics.texture.Texture;
+import mchorse.bbs_mod.graphics.texture.VideoTexture;
+import mchorse.bbs_mod.graphics.texture.VideoTextureManager;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.MathUtils;
@@ -98,8 +100,94 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
         {
             return;
         }
-
-        Texture texture = BBSModClient.getTextures().getTexture(t);
+        
+        Texture texture;
+        
+        // Check if this is a video texture
+        if (this.form.isVideoTexture())
+        {
+            VideoTexture videoTexture = VideoTextureManager.getInstance().getVideoTexture(t);
+            
+            if (videoTexture != null && videoTexture.isLoaded())
+            {
+                // Get video properties from THIS form instance
+                boolean playing = this.form.videoPlaying.get();
+                float startTime = this.form.videoStartTime.get();
+                float speed = this.form.videoPlaybackSpeed.get();
+                boolean loop = this.form.videoLoop.get();
+                
+                int frameNumber = 0;
+                
+                if (playing)
+                {
+                    // Calculate frame from current tick (20 ticks per second)
+                    int currentTick = VideoTextureManager.getInstance().getCurrentTick();
+                    
+                    // Convert tick to seconds
+                    float currentTime = (float) currentTick / 20.0f;
+                    
+                    // Apply start time offset
+                    float videoTime = currentTime - startTime;
+                    
+                    // Apply playback speed
+                    videoTime *= speed;
+                    
+                    // Handle negative time (before video starts)
+                    if (videoTime < 0f)
+                    {
+                        frameNumber = 0;
+                    }
+                    else
+                    {
+                        // Get video info
+                        float framerate = videoTexture.getFramerate();
+                        int totalFrames = videoTexture.getTotalFrames();
+                        float duration = videoTexture.getDuration();
+                        
+                        // Handle looping
+                        if (loop && videoTime > duration)
+                        {
+                            videoTime = videoTime % duration;
+                        }
+                        
+                        // Clamp to video duration if not looping
+                        if (videoTime > duration)
+                        {
+                            frameNumber = totalFrames - 1;
+                        }
+                        else
+                        {
+                            // Calculate frame number
+                            frameNumber = (int) (videoTime * framerate);
+                            frameNumber = Math.max(0, Math.min(frameNumber, totalFrames - 1));
+                        }
+                    }
+                }
+                
+                // Update texture with current frame
+                try
+                {
+                    videoTexture.updateFrame(frameNumber);
+                }
+                catch (Exception e)
+                {
+                    System.err.println("Failed to update video frame: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                
+                texture = videoTexture.getTexture();
+            }
+            else
+            {
+                // Fallback to regular texture if video failed to load
+                texture = BBSModClient.getTextures().getTexture(t);
+            }
+        }
+        else
+        {
+            // Regular texture
+            texture = BBSModClient.getTextures().getTexture(t);
+        }
 
         float w = texture.width;
         float h = texture.height;

@@ -142,10 +142,12 @@ public class UIKeys
     public static final IKey CAMERA_PANELS_SUBTITLE_ANCHOR = L10n.lang("bbs.ui.camera.panels.subtitle.anchor");
     public static final IKey CAMERA_PANELS_SUBTITLE_BACKGROUND = L10n.lang("bbs.ui.camera.panels.subtitle.background");
     public static final IKey CAMERA_PANELS_SUBTITLE_CONSTRAINT = L10n.lang("bbs.ui.camera.panels.subtitle.constraints");
+    public static final IKey CAMERA_PANELS_SUBTITLE_FONT = L10n.lang("bbs.ui.camera.panels.subtitle.font");
     public static final IKey CAMERA_PANELS_SUBTITLE_LINE_HEIGHT = L10n.lang("bbs.ui.camera.panels.subtitle.line_height");
     public static final IKey CAMERA_PANELS_SUBTITLE_MAX_WIDTH = L10n.lang("bbs.ui.camera.panels.subtitle.max_width");
     public static final IKey CAMERA_PANELS_SUBTITLE_OFFSET = L10n.lang("bbs.ui.camera.panels.subtitle.offset");
     public static final IKey CAMERA_PANELS_SUBTITLE_OPAQUE = L10n.lang("bbs.ui.camera.panels.subtitle.opaque");
+    public static final IKey CAMERA_PANELS_SUBTITLE_PICK_FONT = L10n.lang("bbs.ui.camera.panels.subtitle.pick_font");
     public static final IKey CAMERA_PANELS_SUBTITLE_SHADOW = L10n.lang("bbs.ui.camera.panels.subtitle.shadow");
     public static final IKey CAMERA_PANELS_SUBTITLE_SIZE = L10n.lang("bbs.ui.camera.panels.subtitle.size");
     public static final IKey CAMERA_PANELS_SUBTITLE_TEXT_SHADOW = L10n.lang("bbs.ui.camera.panels.subtitle.text_shadow");
@@ -374,6 +376,7 @@ public class UIKeys
     public static final IKey FORMS_EDITORS_LABEL_ANCHOR_LINES = L10n.lang("bbs.ui.forms.editors.label.anchor_lines");
     public static final IKey FORMS_EDITORS_LABEL_BACKGROUND = L10n.lang("bbs.ui.forms.editors.label.background");
     public static final IKey FORMS_EDITORS_LABEL_LABEL = L10n.lang("bbs.ui.forms.editors.label.label");
+    public static final IKey FORMS_EDITORS_LABEL_PICK_FONT = L10n.lang("bbs.ui.forms.editors.label.pick_font");
     public static final IKey FORMS_EDITORS_LABEL_SHADOW_COLOR = L10n.lang("bbs.ui.forms.editors.label.shadow_color");
     public static final IKey FORMS_EDITORS_LABEL_SHADOW_OFFSET = L10n.lang("bbs.ui.forms.editors.label.shadow_offset");
     public static final IKey FORMS_EDITORS_LABEL_TITLE = L10n.lang("bbs.ui.forms.editors.label.title");
@@ -408,6 +411,7 @@ public class UIKeys
     public static final IKey FORMS_EDITOR_MODEL_PICK_MODEL = L10n.lang("bbs.ui.forms.editor.model.pick_model");
     public static final IKey FORMS_EDITOR_MODEL_PICK_TEXTURE = L10n.lang("bbs.ui.forms.editor.model.pick_texture");
     public static final IKey FORMS_EDITOR_PICK_FORM = L10n.lang("bbs.ui.forms.editor.pick_form");
+    public static final IKey FORMS_FONT_MINECRAFT_DEFAULT = L10n.lang("bbs.ui.forms.font.minecraft_default");
     public static final IKey FORMS_EDITOR_SLIM = L10n.lang("bbs.ui.forms.editor.slim");
     public static final IKey FORMS_EDITOR_SLIM_TOOLTIP = L10n.lang("bbs.ui.forms.editor.slim-tooltip");
     public static final IKey FORMS_EDITOR_TOGGLE_TREE = L10n.lang("bbs.ui.forms.editor.toggle_tree");
@@ -570,6 +574,7 @@ public class UIKeys
     public static final IKey MORPHING_DEMORPH = L10n.lang("bbs.ui.morphing.demorph");
     public static final IKey MORPHING_FROM_MOB = L10n.lang("bbs.ui.morphing.from_mob");
     public static final IKey MORPHING_TITLE = L10n.lang("bbs.ui.morphing.title");
+    public static final IKey OVERLAYS_FONTS_MAIN = L10n.lang("bbs.ui.overlays.fonts.main");
     public static final IKey OVERLAYS_SOUNDS_MAIN = L10n.lang("bbs.ui.overlays.sounds.main");
     public static final IKey PANELS_CONTEXT_COPY = L10n.lang("bbs.ui.panels.context.copy");
     public static final IKey PANELS_CONTEXT_OPEN = L10n.lang("bbs.ui.panels.context.open");
@@ -881,6 +886,31 @@ public class UIKeys
     public static final IKey VIDEO_SETTINGS_TITLE = L10n.lang("bbs.ui.video_settings.title");
     public static final IKey VIDEO_SETTINGS_WIDTH = L10n.lang("bbs.ui.video_settings.width");
     public static final IKey WORLD_KEYS_CYCLE_PANELS = L10n.lang("bbs.ui.world.keys.cycle_panels");
+
+    /* Video playback */
+    public static final IKey VIDEO_PLAYBACK_FILE_NOT_FOUND = L10n.lang("bbs.ui.video_playback.file_not_found");
+    public static final IKey VIDEO_PLAYBACK_INVALID_METADATA = L10n.lang("bbs.ui.video_playback.invalid_metadata");
+    public static final IKey VIDEO_PLAYBACK_LOADED = L10n.lang("bbs.ui.video_playback.loaded");
+    public static final IKey VIDEO_PLAYBACK_TEXTURE_CREATED = L10n.lang("bbs.ui.video_playback.texture_created");
+    public static final IKey VIDEO_PLAYBACK_FRAME_NULL = L10n.lang("bbs.ui.video_playback.frame_null");
+    public static final IKey VIDEO_PLAYBACK_DECODE_FAILED = L10n.lang("bbs.ui.video_playback.decode_failed");
+    public static final IKey VIDEO_PLAYBACK_HWACCEL_CUDA = L10n.lang("bbs.ui.video_playback.hwaccel_cuda");
+    public static final IKey VIDEO_PLAYBACK_HWACCEL_QSV = L10n.lang("bbs.ui.video_playback.hwaccel_qsv");
+    public static final IKey VIDEO_PLAYBACK_HWACCEL_CPU = L10n.lang("bbs.ui.video_playback.hwaccel_cpu");
+    public static final IKey VIDEO_PLAYBACK_HWACCEL_FAILED = L10n.lang("bbs.ui.video_playback.hwaccel_failed");
+    public static final IKey VIDEO_PLAYBACK_OPENED = L10n.lang("bbs.ui.video_playback.opened");
+    public static final IKey VIDEO_PLAYBACK_OUT_OF_MEMORY = L10n.lang("bbs.ui.video_playback.out_of_memory");
+    public static final IKey VIDEO_PLAYBACK_FRAME_DECODE_ERROR = L10n.lang("bbs.ui.video_playback.frame_decode_error");
+    public static final IKey VIDEO_PLAYBACK_PRELOAD_FAILED = L10n.lang("bbs.ui.video_playback.preload_failed");
+    public static final IKey VIDEO_PLAYBACK_GRAB_FAILED = L10n.lang("bbs.ui.video_playback.grab_failed");
+    public static final IKey VIDEO_PLAYBACK_TEXTURE_SIZE_MISMATCH = L10n.lang("bbs.ui.video_playback.texture_size_mismatch");
+    
+    /* Video playback UI properties */
+    public static final IKey VIDEO_PLAYBACK = L10n.lang("bbs.ui.video_playback.title");
+    public static final IKey VIDEO_PLAYING = L10n.lang("bbs.ui.video_playback.playing");
+    public static final IKey VIDEO_START_TIME = L10n.lang("bbs.ui.video_playback.start_time");
+    public static final IKey VIDEO_PLAYBACK_SPEED = L10n.lang("bbs.ui.video_playback.speed");
+    public static final IKey VIDEO_LOOP = L10n.lang("bbs.ui.video_playback.loop");
 
     /* Key collections */
     public static final KeyCollection C_CLIP = new KeyCollection("bbs.ui.camera.clips.^")

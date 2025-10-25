@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.ui.framework.elements.utils;
 
+import mchorse.bbs_mod.font.Font;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 public class FontRenderer
 {
     private TextRenderer renderer;
+    private Font font;  // Store the Font object for TTF support
 
     public static List<String> wrap(TextRenderer renderer, String string, int width)
     {
@@ -83,6 +85,22 @@ public class FontRenderer
     public TextRenderer getRenderer()
     {
         return this.renderer;
+    }
+
+    /**
+     * Set the Font object (for TTF support)
+     */
+    public void setFont(Font font)
+    {
+        this.font = font;
+    }
+
+    /**
+     * Get the Font object
+     */
+    public Font getFont()
+    {
+        return this.font;
     }
 
     public int getWidth(String string)

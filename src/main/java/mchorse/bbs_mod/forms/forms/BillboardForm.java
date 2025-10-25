@@ -22,6 +22,12 @@ public class BillboardForm extends Form
     public final ValueFloat offsetY = new ValueFloat("offsetY", 0F);
     public final ValueFloat rotation = new ValueFloat("rotation", 0F);
     public final ValueBoolean shading = new ValueBoolean("shading", true);
+    
+    /* Video playback properties */
+    public final ValueBoolean videoPlaying = new ValueBoolean("videoPlaying", false);
+    public final ValueFloat videoStartTime = new ValueFloat("videoStartTime", 0F);
+    public final ValueFloat videoPlaybackSpeed = new ValueFloat("videoPlaybackSpeed", 1F);
+    public final ValueBoolean videoLoop = new ValueBoolean("videoLoop", false);
 
     public BillboardForm()
     {
@@ -43,6 +49,28 @@ public class BillboardForm extends Form
         this.register(this.offsetY);
         this.register(this.rotation);
         this.register(this.shading);
+        this.register(this.videoPlaying);
+        this.register(this.videoStartTime);
+        this.register(this.videoPlaybackSpeed);
+        this.register(this.videoLoop);
+    }
+    
+    /**
+     * Check if texture is a video file
+     */
+    public boolean isVideoTexture()
+    {
+        Link link = this.texture.get();
+        
+        if (link == null)
+        {
+            return false;
+        }
+        
+        String path = link.path.toLowerCase();
+        return path.endsWith(".mp4") || path.endsWith(".mov") || 
+               path.endsWith(".avi") || path.endsWith(".webm") || 
+               path.endsWith(".mkv");
     }
 
     @Override

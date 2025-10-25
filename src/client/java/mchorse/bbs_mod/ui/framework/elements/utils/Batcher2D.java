@@ -32,6 +32,7 @@ public class Batcher2D
     public static FontRenderer getDefaultTextRenderer()
     {
         fontRenderer.setRenderer(MinecraftClient.getInstance().textRenderer);
+        fontRenderer.setFont(null);  // Default font doesn't have a Font object
 
         return fontRenderer;
     }
@@ -462,7 +463,39 @@ public class Batcher2D
 
     public void text(String label, float x, float y, int color, boolean shadow)
     {
-        this.context.drawText(this.font.getRenderer(), label, (int) x, (int) y, color, shadow);
+        // Use TTF text renderer if available
+        if (this.font.getFont() != null && this.font.getFont().isTTFFont() && this.font.getFont().getTTFTextRenderer() != null)
+        {
+            System.out.println("[Batcher2D.text] Using TTF renderer for: " + label);
+            if (shadow)
+            {
+                this.font.getFont().getTTFTextRenderer().drawWithShadow(this.context.getMatrices(), label, (int) x, (int) y, color);
+            }
+            else
+            {
+                this.font.getFont().getTTFTextRenderer().draw(this.context.getMatrices(), label, x, y, color);
+            }
+        }
+        else
+        {
+            // Debug: why are we not using TTF?
+            if (this.font.getFont() == null)
+            {
+                System.out.println("[Batcher2D.text] Font object is null");
+            }
+            else if (!this.font.getFont().isTTFFont())
+            {
+                System.out.println("[Batcher2D.text] Not a TTF font: " + this.font.getFont().getDisplayName());
+            }
+            else if (this.font.getFont().getTTFTextRenderer() == null)
+            {
+                System.out.println("[Batcher2D.text] TTF text renderer is null for: " + this.font.getFont().getDisplayName());
+            }
+            
+            // Use standard Minecraft text renderer
+            this.context.drawText(this.font.getRenderer(), label, (int) x, (int) y, color, shadow);
+        }
+        
         this.context.draw();
 
         RenderSystem.depthFunc(GL11.GL_ALWAYS);

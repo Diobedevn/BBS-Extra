@@ -11,10 +11,13 @@ import mchorse.bbs_mod.camera.controller.RunnerCameraController;
 import mchorse.bbs_mod.camera.utils.TimeUtils;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.forms.BillboardForm;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.triggers.StateTrigger;
+import mchorse.bbs_mod.graphics.texture.VideoTextureManager;
 import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.network.ClientNetwork;
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
 import mchorse.bbs_mod.ui.ContentType;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -29,9 +32,11 @@ import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Films
 {
@@ -213,6 +218,55 @@ public class Films
     public void add(BaseFilmController controller)
     {
         this.controllers.add(controller);
+        
+        // Preload video textures used in this film
+        this.preloadVideosInFilm(controller.film);
+    }
+    
+    /**
+     * Preload all video textures used in a film before playback starts.
+     * This prevents lag spikes during playback.
+     */
+    private void preloadVideosInFilm(Film film)
+    {
+        Set<Link> videoTextures = new HashSet<>();
+        
+        // Scan all replays in the film for video textures
+        for (Replay replay : film.replays.getList())
+        {
+            Form form = replay.form.get();
+            
+            if (form instanceof BillboardForm billboard && billboard.isVideoTexture())
+            {
+                Link videoPath = billboard.texture.get();
+                
+                if (videoPath != null)
+                {
+                    videoTextures.add(videoPath);
+                }
+            }
+        }
+        
+        // Preload all found video textures
+        VideoTextureManager manager = VideoTextureManager.getInstance();
+        
+        for (Link videoPath : videoTextures)
+        {
+            manager.preloadVideoTexture(videoPath);
+        }
+        
+        if (!videoTextures.isEmpty())
+        {
+            System.out.println("Preloading " + videoTextures.size() + " video texture(s) for film: " + film.getId());
+        }
+    }
+    
+    /**
+     * Get all controllers (used for video preloading)
+     */
+    public List<BaseFilmController> getControllers()
+    {
+        return this.controllers;
     }
 
     public boolean has(String filmId)

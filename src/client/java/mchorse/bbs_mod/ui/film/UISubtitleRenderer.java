@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.camera.clips.misc.Subtitle;
+import mchorse.bbs_mod.font.FontManager;
 import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.graphics.Framebuffer;
 import mchorse.bbs_mod.graphics.texture.Texture;
@@ -70,13 +71,16 @@ public class UISubtitleRenderer
         Framebuffer framebuffer = getTextFramebuffer();
         Texture texture = framebuffer.getMainTexture();
         Matrix4f ortho = new Matrix4f().ortho(0, width, height, 0, -100, 100);
-        FontRenderer font = Batcher2D.getDefaultTextRenderer();
 
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
         RenderSystem.disableCull();
 
         for (Subtitle subtitle : subtitles)
         {
+            // Use custom font if specified, otherwise use default
+            FontRenderer font = (subtitle.font != null)
+                ? FontManager.get().getFontRenderer(subtitle.font)
+                : Batcher2D.getDefaultTextRenderer();
             float alpha = Colors.getA(subtitle.color);
 
             if (alpha <= 0)

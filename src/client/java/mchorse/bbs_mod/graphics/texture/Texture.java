@@ -200,7 +200,21 @@ public class Texture
 
     public void updateTexture(int target, Pixels pixels)
     {
-        this.uploadTexture(target, 0, pixels.width, pixels.height, pixels.getBuffer());
+        // Check if texture is already allocated and dimensions match (for video frame updates)
+        if (this.width > 0 && this.height > 0 && pixels.width == this.width && pixels.height == this.height)
+        {
+            // Fast path: use glTexSubImage2D to update existing texture data
+            // This is much faster for video frames since we're just updating pixels
+            GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+            GL11.glTexSubImage2D(target, 0, 0, 0, pixels.width, pixels.height, 
+                this.format.format, this.format.type, pixels.getBuffer());
+        }
+        else
+        {
+            // Slow path: re-upload entire texture (first frame or size mismatch)
+            // This allocates the texture storage with glTexImage2D
+            this.uploadTexture(target, 0, pixels.width, pixels.height, pixels.getBuffer());
+        }
     }
 
     public void uploadTexture(Pixels pixels)

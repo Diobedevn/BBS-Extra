@@ -1,20 +1,33 @@
 package mchorse.bbs_mod.ui.forms.editors.panels;
 
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.font.FontManager;
 import mchorse.bbs_mod.forms.forms.LabelForm;
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIForm;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIFontOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.colors.Color;
+
+import java.io.File;
 
 public class UILabelFormPanel extends UIFormPanel<LabelForm>
 {
     public UITextbox text;
     public UIToggle billboard;
     public UIColor color;
+    public UIButton pickFont;
+    public UIIcon openFontFolder;
     public UITrackpad max;
     public UITrackpad anchorX;
     public UITrackpad anchorY;
@@ -34,6 +47,21 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.text = new UITextbox(10000, (t) -> this.form.text.set(t));
         this.billboard = new UIToggle(UIKeys.FORMS_EDITORS_BILLBOARD_TITLE, (b) -> this.form.billboard.set(b.getValue()));
         this.color = new UIColor((c) -> this.form.color.set(Color.rgba(c))).withAlpha();
+        
+        /* Font picker */
+        this.pickFont = new UIButton(UIKeys.FORMS_EDITORS_LABEL_PICK_FONT, (b) ->
+        {
+            UIFontOverlayPanel panel = new UIFontOverlayPanel((l) -> this.form.font.set(l));
+
+            UIOverlay.addOverlay(this.getContext(), panel.setFont(this.form.font.get()));
+        });
+
+        this.openFontFolder = new UIIcon(Icons.FOLDER, (b) ->
+        {
+            File fontFolder = FontManager.getFontFolder();
+            UIUtils.openFolder(fontFolder);
+        });
+
         this.max = new UITrackpad((value) -> this.form.max.set(value.intValue()));
         this.max.limit(-1, Integer.MAX_VALUE, true).increment(10);
         this.anchorX = new UITrackpad((value) -> this.form.anchorX.set(value.floatValue()));
@@ -52,6 +80,7 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.offset = new UITrackpad((value) -> this.form.offset.set(value.floatValue()));
 
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_LABEL), this.text, this.billboard, this.color, this.max);
+        this.options.add(UI.row(this.pickFont, this.openFontFolder).marginTop(8));
 
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_ANCHOR).marginTop(8), UI.row(this.anchorX, this.anchorY), this.anchorLines);
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_SHADOW_OFFSET).marginTop(8), this.shadowX, this.shadowY);

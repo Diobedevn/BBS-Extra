@@ -23,6 +23,7 @@ public class TextureManager implements IWatchDogListener
 {
     public final Map<Link, Texture> textures = new HashMap<>();
     public final Map<Link, AnimatedTexture> animatedTextures = new HashMap<>();
+    public final Map<Link, VideoTexture> videoTextures = new HashMap<>();
     public AssetProvider provider;
 
     private Texture error;
@@ -116,6 +117,16 @@ public class TextureManager implements IWatchDogListener
 
     public boolean has(Link link)
     {
+        // Check if this is a video file - they're valid but handled separately
+        String path = link.path.toLowerCase();
+        if (path.endsWith(".mp4") || path.endsWith(".mov") || 
+            path.endsWith(".avi") || path.endsWith(".webm") || 
+            path.endsWith(".mkv"))
+        {
+            // Video files are valid textures (handled by VideoTextureManager)
+            return true;
+        }
+        
         return this.getTexture(link) != this.getError();
     }
 
@@ -193,6 +204,20 @@ public class TextureManager implements IWatchDogListener
         {
             try
             {
+                // Check if this is a video file
+                String path = link.path.toLowerCase();
+                boolean isVideo = path.endsWith(".mp4") || path.endsWith(".mov") || 
+                                  path.endsWith(".avi") || path.endsWith(".webm") || 
+                                  path.endsWith(".mkv");
+                
+                if (isVideo)
+                {
+                    // Video textures are handled by VideoTextureManager
+                    // Return error texture, actual video rendering happens in BillboardFormRenderer
+                    this.textures.put(link, this.getError());
+                    return this.getError();
+                }
+                
                 Pixels pixels = this.getPixels(link);
 
                 if (pixels != null)
@@ -267,9 +292,15 @@ public class TextureManager implements IWatchDogListener
         {
             animatedTexture.delete();
         }
+        
+        for (VideoTexture videoTexture : this.videoTextures.values())
+        {
+            videoTexture.delete();
+        }
 
         this.textures.clear();
         this.animatedTextures.clear();
+        this.videoTextures.clear();
         this.extruder.deleteAll();
     }
 

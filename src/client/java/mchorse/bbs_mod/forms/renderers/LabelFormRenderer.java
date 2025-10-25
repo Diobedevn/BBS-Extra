@@ -2,6 +2,7 @@ package mchorse.bbs_mod.forms.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.client.BBSShaders;
+import mchorse.bbs_mod.font.FontManager;
 import mchorse.bbs_mod.forms.CustomVertexConsumerProvider;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.LabelForm;
@@ -48,21 +49,62 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
     @Override
     public void renderInUI(UIContext context, int x1, int y1, int x2, int y2)
     {
+        // Use custom font if specified, otherwise use default batcher font
+        mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer fontRenderer = (this.form.font.get() != null)
+            ? FontManager.get().getFontRenderer(this.form.font.get())
+            : context.batcher.getFont();
+        
+        // Debug: Log what font is being used
+        if (this.form.font.get() != null)
+        {
+            System.out.println("[LabelForm] Custom font link: " + this.form.font.get());
+            System.out.println("[LabelForm] FontRenderer.getFont() is null? " + (fontRenderer.getFont() == null));
+            if (fontRenderer.getFont() != null)
+            {
+                System.out.println("[LabelForm] Font display name: " + fontRenderer.getFont().getDisplayName());
+                System.out.println("[LabelForm] Is TTF: " + fontRenderer.getFont().isTTFFont());
+            }
+        }
+        
         int color = this.form.color.get().getARGBColor();
         String text = StringUtils.processColoredText(this.form.text.get());
-        List<String> wrap = context.batcher.getFont().wrap(text, x2 - x1 - 4);
+        List<String> wrap = fontRenderer.wrap(text, x2 - x1 - 4);
 
-        int th = context.batcher.getFont().getHeight();
+        int th = fontRenderer.getHeight();
         int lineHeight = th + 4;
         int h = th + (wrap.size() - 1) * lineHeight;
         int y = (y2 + y1) / 2 - h / 2;
 
         for (String s : wrap)
         {
-            context.batcher.textShadow(s, x1 + 2, y, color);
+            // Use TTF text renderer if available, otherwise use standard renderer
+            if (fontRenderer.getFont() != null && fontRenderer.getFont().isTTFFont() && fontRenderer.getFont().getTTFTextRenderer() != null)
+            {
+                System.out.println("[LabelForm] ✓ Using TTF renderer for: " + s);
+                fontRenderer.getFont().getTTFTextRenderer().drawWithShadow(context.batcher.getContext().getMatrices(), s, x1 + 2, y, color);
+            }
+            else
+            {
+                if (fontRenderer.getFont() == null)
+                {
+                    System.out.println("[LabelForm] ✗ Font object is NULL for: " + s);
+                }
+                else if (!fontRenderer.getFont().isTTFFont())
+                {
+                    System.out.println("[LabelForm] ✗ Not TTF font (is " + fontRenderer.getFont().getDisplayName() + ") for: " + s);
+                }
+                else
+                {
+                    System.out.println("[LabelForm] ✗ TTF renderer is NULL for: " + s);
+                }
+                
+                context.batcher.getContext().drawText(fontRenderer.getRenderer(), s, x1 + 2, y, color, true);
+            }
 
             y += lineHeight;
         }
+        
+        context.batcher.getContext().draw();
     }
 
     @Override
@@ -86,7 +128,11 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             context.stack.peek().getNormalMatrix().identity();
         }
 
-        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+        // Use custom font if specified, otherwise use default Minecraft font
+        TextRenderer renderer = (this.form.font.get() != null)
+            ? FontManager.get().getFontRenderer(this.form.font.get()).getRenderer()
+            : MinecraftClient.getInstance().textRenderer;
+        
         CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
         float scale = 1F / 16F;
         int light = context.light;

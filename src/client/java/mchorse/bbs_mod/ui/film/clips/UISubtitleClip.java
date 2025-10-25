@@ -1,14 +1,23 @@
 package mchorse.bbs_mod.ui.film.clips;
 
 import mchorse.bbs_mod.camera.clips.misc.SubtitleClip;
+import mchorse.bbs_mod.font.FontManager;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIFontOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.Direction;
+
+import java.io.File;
 
 public class UISubtitleClip extends UIClip<SubtitleClip>
 {
@@ -28,6 +37,8 @@ public class UISubtitleClip extends UIClip<SubtitleClip>
     public UIPropTransform transform;
     public UITrackpad lineHeight;
     public UITrackpad maxWidth;
+    public UIButton pickFont;
+    public UIIcon openFontFolder;
 
     public UISubtitleClip(SubtitleClip clip, IUIClipsDelegate editor)
     {
@@ -107,6 +118,22 @@ public class UISubtitleClip extends UIClip<SubtitleClip>
             value.set(v.intValue());
         }));
         this.maxWidth.limit(0).integer().tooltip(UIKeys.CAMERA_PANELS_SUBTITLE_MAX_WIDTH, Direction.BOTTOM);
+        
+        this.pickFont = new UIButton(UIKeys.CAMERA_PANELS_SUBTITLE_PICK_FONT, (b) ->
+        {
+            UIFontOverlayPanel panel = new UIFontOverlayPanel((link) -> this.editor.editMultiple(this.clip.font, (value) ->
+            {
+                value.set(link);
+            }));
+            panel.setFont(this.clip.font.get());
+            UIOverlay.addOverlay(this.getContext(), panel, 0.5F, 0.6F);
+        });
+        
+        this.openFontFolder = new UIIcon(Icons.FOLDER, (b) ->
+        {
+            File folder = FontManager.getFontFolder();
+            UIUtils.openFolder(folder);
+        });
     }
 
     @Override
@@ -122,6 +149,7 @@ public class UISubtitleClip extends UIClip<SubtitleClip>
         this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_SUBTITLE_SHADOW), this.shadow, this.shadowOpaque).marginTop(6));
         this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_SUBTITLE_TRANSFORM), this.transform).marginTop(6));
         this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_SUBTITLE_CONSTRAINT), UI.row(this.lineHeight, this.maxWidth)).marginTop(6));
+        this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_SUBTITLE_FONT), UI.row(this.pickFont, this.openFontFolder)).marginTop(6));
     }
 
     @Override
